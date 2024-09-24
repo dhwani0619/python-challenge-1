@@ -1,12 +1,12 @@
 # Menu dictionary
 menu = {
-    "Snacks": {
+    "1. Snacks": {
         "Cookie": .99,
         "Banana": .69,
         "Apple": .49,
         "Granola bar": 1.99
     },
-    "Meals": {
+    "2. Meals": {
         "Burrito": 4.49,
         "Teriyaki Chicken": 9.99,
         "Sushi": 7.49,
@@ -21,7 +21,7 @@ menu = {
             "Beef": 8.49
         }
     },
-    "Drinks": {
+    "3. Drinks": {
         "Soda": {
             "Small": 1.99,
             "Medium": 2.49,
@@ -38,7 +38,7 @@ menu = {
             "Iced": 3.49
         }
     },
-    "Dessert": {
+    "4. Dessert": {
         "Chocolate lava cake": 10.99,
         "Cheesecake": {
             "New York": 4.99,
@@ -50,216 +50,116 @@ menu = {
     }
 }
 
-# 1. Set up order list. Order list will store a list of dictionaries for
-# menu item name, item price, and quantity ordered
-order_list = [
-    {
-        "Item name": "Cookie",
-        "Price": .99,
-        "Quantity": 1
-    },
-    {
-        "Item name": "Banana",
-        "Price": .69,
-        "Quantity": 1
-    },
-    {
-        "Item name": "Apple",
-        "Price": .49,
-        "Quantity": 1
-    },
-    {
-        "Item name": "Granola bar",
-        "Price": 1.99,
-        "Quantity": 1
-    },
-    {
-        "Item name": "Burrito",
-        "Price": 4.49,
-        "Quantity": 1
-    },
-    {
-        "Item name": "Teriyaki Chicken",
-        "Price": 9.99,
-        "Quantity": 1
-    },
-    {
-        "Item name": "Sushi",
-        "Price": 7.49,
-        "Quantity": 1
-    },
-    {
-        "Item name": "Pad Thai",
-        "Price": 6.99,
-        "Quantity": 1
-    },
-    {
-        "Item name": "Pizza - Cheese",
-        "Price": 8.99,
-        "Quantity": 1
-    },
-    {
-        "Item name": "Pizza - Pepproni",
-        "Price": 10.99,
-        "Quantity": 1
-    },
-    {
-        "Item name": "Pizza - Vegetarian",
-        "Price": 9.99,
-        "Quantity": 1
-    },
-    {
-        "Item name": "Burger - Chicken",
-        "Price": 7.49,
-        "Quantity": 1
-    },
-    {
-        "Item name": "Burger - Beef",
-        "Price": 8.49,
-        "Quantity": 1
-    },
-    {
-        "Item name": "Soda - Small",
-        "Price": 1.99,
-        "Quantity": 1
-    },
-    {
-        "Item name": "Soda - Medium",
-        "Price": 2.49,
-        "Quantity": 1
-    },
-    {
-        "Item name": "Soda - Large",
-        "Price": 2.99,
-        "Quantity": 1
-    },
-    {
-        "Item name": "Tea - Green",
-        "Price": 2.49,
-        "Quantity": 1
-    },
-    {
-        "Item name": "Tea - Thai iced",
-        "Price": 3.99,
-        "Quantity": 1
-    },
-    {
-        "Item name": "Tea - Irish breakfast",
-        "Price": 2.49,
-        "Quantity": 1
-    },
-    {
-        "Item name": "Coffee - Espresso",
-        "Price": 2.99,
-        "Quantity": 1
-    },
-    {
-        "Item name": "Coffee - Flat white",
-        "Price": 2.99,
-        "Quantity": 1
-    },
-    {
-        "Item name": "Coffee - Iced",
-        "Price": 3.49,
-        "Quantity": 1
-    },
-    {
-        "Item name": "Chocolate lava cake",
-        "Price": 10.99,
-        "Quantity": 1
-    },
-    {
-        "Item name": "Cheescake - New York",
-        "Price": 4.99,
-        "Quantity": 1
-    },
-    {
-        "Item name": "Cheesecake - Strawberry",
-        "Price": 6.49,
-        "Quantity": 1
-    },
-    {
-        "Item name": "Australian Pavlova",
-        "Price": 9.99,
-        "Quantity": 1
-    },
-    {
-        "Item name": "Rice pudding",
-        "Price": 4.99,
-        "Quantity": 1
-    },
-    {
-        "Item name": "Fried banana",
-        "Price": 4.49,
-        "Quantity": 1
-    },
-]
-                
+# Empty order list 
+order_list = []
 
 
-# Launch the store and present a greeting to the customer
-print("Welcome to the variety food truck.")
+# Displaying the Menu
+def display_menu():
+    print ("Welcome to the Variety Food Truck.")
+    print ("How can I help you? Please make a selection from the menu: \n")
 
-# Customers may want to order multiple items, so let's create a continuous
-# loop
-place_order = True
-while place_order:
-    print("Please make a selection from the menu: ")
-    for category, items in order_list():
+    menu_items = []
+    for category, items in menu.items():
         print(f"{category}:")
         for item_name, item_price in items.items():
             if isinstance(item_price, dict): 
-                for sub_item_name, dub_item_price in item_price.items():
-                    print(f" {item_name} - {sub_item_name}: ${sub_item_price}")
+                print(f"  {item_name}:")
+                for sub_item, sub_price in item_price.items():
+                    print(f"   - {sub_item}: ${sub_price:.2f}")
+                    menu_items.append(sub_item)
             else:
-                print(f" {item_name}: ${item_price}")
+                print(f" - {item_name}: ${item_price:.2f}")
+                menu_items.append(item_name)
+        print()
 
-menu_selection = input("Enter your selection or 'q' to quit: ").strip()
+    return menu_items
 
-if not menu_selection.isdigit():
-    print("Error: Your input must be a number.")
+# Taking order
+def take_order():
+    while True:
+        menu_selection = input("Enter the section number you want to order from: ")
 
-menu_selection = int(menu_selection)
-if menu_selection not in menu_items:
-    print ("Error: Your selection is not on the menu.")
+        if not menu_selection.isdigit() or int(menu_selection) not in range(1, len(menu) +1):
+            print("Error: Please enter a valid number.")
+            continue
 
-item_name = list(menu_items.keys())[menu_selection -1]
-quantity = input(f"How many {item_name} would you like? (default is 1) ") or "1"
-if not quantity.isdigit():
-    quantity = 1
-else:
-    quantity - int(quantity)
+        menu_selection = int(menu_selection)
 
-order_list.append({
-        "Item name": item_name,
-        "Price": menu_items[item_name],
-        "Quantity": quantity
-})
+        item_keys = list(menu.keys())
 
-match input("Would you like to keep ordering? (y/n) ").lower():
-    case "y":
-        place_order = True
-    case "n":
-        print("Thank you for your order!")
-        place_order = False
-    case _: 
-        print("Invalid input. Please try again.")
+        selected_category = item_keys[menu_selection - 1]
+        items = menu[selected_category]
+        item_name = list(items.keys())
 
-print("nOrder Receipt:")
-print("Item name                    | Price | Quantity")
-print("-----------------------------|-------|---------")
-total_price = 0
+        print(f"You selected: {selected_category} -> {item_name}")
+
+        item_name = input(f"Enter the name of the item you would like to order from the {selected_category}: ")
+
+        if isinstance(items.get(item_name), dict):
+            print(f"Select a sub-item for {item_name}: {list(items[item_name].keys())}")
+            sub_item_name = input(f"Enter the sub-item name you want from {item_name}: ")
+
+            if sub_item_name not in items[item_name]:
+                print("Error: Sub-item not found in the selected category.")
+                continue 
+
+            item_name = f"{item_name} ({sub_item_name})"
+            price = items[item_name.split()[0]][sub_item_name]
+        else:
+            if item_name not in items: 
+                print("Error: Item not in the selected category or menu.")
+                continue
+
+            price = items[item_name]
+
+        # Quantity 
+        quantity_input = input(f"Enter the quantity for {item_name}: ")
+
+        if not quantity_input.isdigit():
+            quantity = 1
+        else: 
+            quantity = int(quantity_input)
+
+    # Adding order to the order list
+        order_list.append({
+            "Item name": item_name,
+            "Price": price,
+            "Quantity": quantity
+        })
+
+    # Asking if customer wants to add something to order or thats it 
+        while True: 
+            continue_ordering = input("Would you like to add anything else? (y/n): ").lower()
+            if continue_ordering    == 'y':
+                break
+            elif continue_ordering == 'n':
+                print("Thank you for placing your order. It will be right out.")
+                return
+            else:
+                print("Invalid input. Please enter 'y' to continue or 'n' to finish placing your order.")
+
+
+# Running the program
+menu_items = display_menu()
+take_order()
+
+# Printing the receipt
+print("Your Order Receipt:")
+print(f"{'Item name':<25} | {'Price':<7} | {'Quantity'}")
+print("-" * 50)
+
 for order in order_list:
     item_name = order["Item name"]
     price = order["Price"]
     quantity = order["Quantity"]
-    item_price_spaces = " " * (24 - len(item_name))
-    price_spaces = " " * (8 - len(str(price)))
-    quantity_spaces = " " * (10 - len(str(quantity)))
-    print(f"{item_name}{item_price_spaces}| ${price}{price_spaces}| {quantity}{quantity_spaces}")
-    total_price += price * quantity
 
-print(f"\nTotal: ${sum(order['Price'] * order['Quantity'] for order in order_list):.2f}")
-        
+    print(f"{item_name:<25} | ${price:<6.2f} | {quantity}")
 
-   
+
+# Calculating the total price of order 
+
+total_price = sum(order['Price'] * order['Quantity'] for order in order_list)
+
+print(f"Total Price: ${total_price:.2f}")
+
