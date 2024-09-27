@@ -9,7 +9,7 @@ menu = {
     "2. Meals": {
         "Burrito": 4.49,
         "Teriyaki Chicken": 9.99,
-        "Sushi": 7.49,
+        "Sushi": 17.49,
         "Pad Thai": 6.99,
         "Pizza": {
             "Cheese": 8.99,
@@ -78,52 +78,68 @@ def display_menu():
 # Taking order
 def take_order():
     while True:
-        menu_selection = input("Enter the section number you want to order from: ")
+        category_selection = input("Enter the number of the section you want to order form: ")
 
-        if not menu_selection.isdigit() or int(menu_selection) not in range(1, len(menu) +1):
-            print("Error: Please enter a valid number.")
+        if not category_selection.isdigit() or int(category_selection) not in range(1, len(menu) +1):
+            print("Error: Please enter a valid section number.")
             continue
 
-        menu_selection = int(menu_selection)
-
-        item_keys = list(menu.keys())
-
-        selected_category = item_keys[menu_selection - 1]
+        category_keys = list(menu.keys())
+        selected_category = category_keys[int(category_selection) - 1]
         items = menu[selected_category]
-        item_name = list(items.keys())
 
-        print(f"You selected: {selected_category} -> {item_name}")
 
-        item_name = input(f"Enter the name of the item you would like to order from the {selected_category}: ")
+        print(f"You selected: {selected_category}")
+        for idx, (item_name, item_price) in enumerate(items.items(), 1):
+            if isinstance(item_price, dict):
+                print(f" {idx}. {item_name} (multiple options)")
+            else: 
+                print (f" {idx}. {item_name} - ${item_price:.2f}")
 
-        if isinstance(items.get(item_name), dict):
-            print(f"Select a sub-item for {item_name}: {list(items[item_name].keys())}")
-            sub_item_name = input(f"Enter the sub-item name you want from {item_name}: ")
+        item_selection = input(f"Select an item by number: ")
 
-            if sub_item_name not in items[item_name]:
-                print("Error: Sub-item not found in the selected category.")
+        if not item_selection.isdigit() or int(item_selection) not in range(1, len(items) +1):
+            print("Error: Please select a valid item.")
+            continue
+
+        item_keys = list(items.keys())
+        selected_item = item_keys[int(item_selection) - 1]
+
+        if isinstance(items[selected_item], dict):
+            print(f"You selected {selected_item}. Please choose from an option: ")
+            sub_items = items[selected_item]
+            for idx, (sub_item_name, sub_item_price) in enumerate(sub_items.items(), 1):
+                print (f" {idx}. {sub_item_name} - ${sub_item_price:.2f}")
+
+            sub_item_selection = input(f"Select a sub-item by number: ")
+
+            if not sub_item_selection.isdigit() or int(sub_item_selection) not in range(1, len(sub_items) + 1):
+                print("Error: Please select a valid sub-item.")
                 continue 
 
-            item_name = f"{item_name} ({sub_item_name})"
-            price = items[item_name.split()[0]][sub_item_name]
-        else:
-            if item_name not in items: 
-                print("Error: Item not in the selected category or menu.")
-                continue
+            sub_item_keys = list(sub_items.keys())
+            selected_sub_item = sub_item_keys[int(sub_item_selection) - 1]
+            price = sub_items[selected_sub_item]
+            full_item_name = f"{selected_item} ({selected_sub_item})"
 
-            price = items[item_name]
+        else: 
+            full_item_name = selected_item
+            price = items[selected_item]
 
         # Quantity 
-        quantity_input = input(f"Enter the quantity for {item_name}: ")
-
-        if not quantity_input.isdigit():
-            quantity = 1
-        else: 
-            quantity = int(quantity_input)
+        while True: 
+            quantity_input = input(f"Enter the quantity for {full_item_name} you would like to order: ")
+            if not quantity_input.isdigit():
+                print("Invalid input. Setting quantity to 1.")
+                quantity = 1
+                break 
+            else: 
+                quantity = int(quantity_input)
+                break
 
     # Adding order to the order list
         order_list.append({
-            "Item name": item_name,
+            "Item name": full_item_name,
             "Price": price,
             "Quantity": quantity
         })
@@ -139,27 +155,23 @@ def take_order():
             else:
                 print("Invalid input. Please enter 'y' to continue or 'n' to finish placing your order.")
 
-
-# Running the program
-menu_items = display_menu()
-take_order()
-
 # Printing the receipt
-print("Your Order Receipt:")
-print(f"{'Item name':<25} | {'Price':<7} | {'Quantity'}")
-print("-" * 50)
+def print_receipt():
+    print("Your Order Receipt:")
+    print(f"{'Item name':<30} | {'Price':<7} | {'Quantity'}")
+    print("-" * 50)
 
-for order in order_list:
-    item_name = order["Item name"]
-    price = order["Price"]
-    quantity = order["Quantity"]
+    total_price = 0
+    for order in order_list:
+        item_name = order["Item name"]
+        price = order["Price"]
+        quantity = order["Quantity"]
+        total_price += price * quantity
+        print(f"{item_name:<30} | ${price:<6.2f} | {quantity}")
 
-    print(f"{item_name:<25} | ${price:<6.2f} | {quantity}")
+    print("-" * 50)
+    print(f"Total Price: ${total_price:.2f}")
 
-
-# Calculating the total price of order 
-
-total_price = sum(order['Price'] * order['Quantity'] for order in order_list)
-
-print(f"Total Price: ${total_price:.2f}")
-
+display_menu()
+take_order()
+print_receipt()
